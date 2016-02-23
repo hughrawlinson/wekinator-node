@@ -16,6 +16,8 @@ wn.connect(function(){
 });
 ```
 
+Another example is available [here](https://github.com/hughrawlinson/wekinator-node/blob/master/examples/index.js)
+
 ## API
 * `WekinatorNode` (constructor) takes `wekinatorHost, wekinatorPort, localPort [optional]`
 * `connect` takes a `callback`
@@ -58,3 +60,4 @@ wn.connect(function(){
   * Sets the Wekinator output names to those names, in order.
 * `selectInputsForOutput` takes `output, inputs`
   * Connects a list of inputs to a specific output.
+* `trainOnData` takes a list of objects with the properties 'inputs' and 'outputs', each of which are arrays of floats like in `inputs` and `outputs`.
