@@ -1,13 +1,13 @@
 # wekinator-node
 [![Dependency Status](https://david-dm.org/hughrawlinson/wekinator-node.svg)](https://david-dm.org/hughrawlinson/wekinator-node)
-[![npm version](https://badge.fury.io/js/wekinator-node.svg)](https://badge.fury.io/js/wekinator-node)
+[![npm version](https://badge.fury.io/js/wekinator.svg)](https://badge.fury.io/js/wekinator)
 
 An SDK to interface with Wekinator over OSC.
 
 ## Usage
 ```javascript
-var WekinatorNode = require('wekinator-node')
-var wn = new WekinatorNode('0.0.0.0',6448);
+var Wekinator = require('wekinator')
+var wn = new Wekinator();
 wn.connect(function(){
   wn.train();
   setTimeout(function(){

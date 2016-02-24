@@ -1,6 +1,6 @@
 {
   "name": "wekinator",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "An SDK to interface with Wekinator over OSC",
   "main": "index.js",
   "scripts": {
@@ -8,6 +8,14 @@
   },
   "author": "Hugh Rawlinson <hugh@codeoclock.net>",
   "license": "MIT",
+	"homepage": "https://github.com/hughrawlinson/wekinator-node/",
+	"repository": {
+		"type" : "git",
+		"url" : "https://github.com/hughrawlinson/wekinator-node.git"
+	},
+	"bugs": {
+		"url" : "https://github.com/hughrawlinson/wekinator-node/issues"
+	},
   "dependencies": {
     "osc": "^2.0.3"
   }
