@@ -4,19 +4,22 @@
   "description": "An SDK to interface with Wekinator over OSC",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Hugh Rawlinson <hugh@codeoclock.net>",
   "license": "MIT",
-	"homepage": "https://github.com/hughrawlinson/wekinator-node/",
-	"repository": {
-		"type" : "git",
-		"url" : "https://github.com/hughrawlinson/wekinator-node.git"
-	},
-	"bugs": {
-		"url" : "https://github.com/hughrawlinson/wekinator-node/issues"
-	},
+  "homepage": "https://github.com/hughrawlinson/wekinator-node/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hughrawlinson/wekinator-node.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hughrawlinson/wekinator-node/issues"
+  },
   "dependencies": {
-    "osc": "^2.0.3"
+    "osc": "^2.3.0"
+  },
+  "devDependencies": {
+    "jest": "^24.8.0"
   }
 }
