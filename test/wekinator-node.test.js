@@ -36,3 +36,14 @@ test('All functions error if called before connect', function() {
     .map(a => wn.prototype[a])
     .forEach(f => expect(f).toThrow());
 });
+
+test.skip('Constructor', function() {
+  console.log(wn());
+  const functions = Object.keys(wn.prototype)
+    .filter(f => !['connect'].includes(f))
+    .map(a => wn.prototype[a])
+    // .forEach(f => expect(f).toThrow());
+    .forEach(f => {
+      try { f() } catch(e) { console.log(e.message) }
+    });
+});
