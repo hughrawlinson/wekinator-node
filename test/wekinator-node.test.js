@@ -1,6 +1,17 @@
 const Wekinator = require('../index.js');
 const oscMock = require('osc');
 
+const noArgFunctions = [
+  'startRecording',
+  'stopRecording',
+  'stopDtwRecording',
+  'train',
+  'cancelTrain',
+  'startRunning',
+  'stopRunning',
+  'deleteAllExamples'
+];
+
 afterEach(() => {
   oscMock.UDPPort.mockReset();
 });
@@ -101,6 +112,26 @@ test('constructor allows setting other weka server config', function() {
       localPort: localPort,
       remoteAddress: wekinatorHost,
       remotePort: wekinatorPort
+    });
+  });
+});
+
+test('API sends correct OSC messages', () => {
+  const wn = new Wekinator();
+  const functionToOscMessage = {
+    startRecording: "startRecording",
+    stopRecording: "stopRecording",
+    stopDtwRecording: "stopDtwRecording",
+    train: 'train',
+
+  };
+
+  wn.connect(() => {
+    noArgFunctions.forEach((f, i) => {
+      wn[f]();
+      expect(oscMock.UDPPort.prototype.send.mock.calls[i][0]).toEqual({
+        address: `/wekinator/control/${f}`
+      });
     });
   });
 });
