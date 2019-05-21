@@ -1,11 +1,11 @@
-const wn = require('../index.js');
+const Wekinator = require('../index.js');
 
 test('exports something', function() {
-  expect(wn).not.toBeNull();
+  expect(Wekinator).not.toBeNull();
 });
 
 test('exports the right functions', function() {
-  expect(Object.keys(wn.prototype).sort()).toEqual([
+  expect(Object.keys(Wekinator.prototype).sort()).toEqual([
     "cancelTrain",
     "close",
     "connect",
@@ -32,18 +32,26 @@ test('exports the right functions', function() {
 });
 
 test('All functions error if called before connect', function() {
-  const functions = Object.keys(wn.prototype)
-    .map(a => wn.prototype[a])
+  const functions = Object.keys(Wekinator.prototype)
+    .map(a => Wekinator.prototype[a])
     .forEach(f => expect(f).toThrow());
 });
 
 test.skip('Constructor', function() {
-  console.log(wn());
-  const functions = Object.keys(wn.prototype)
+  const functions = Object.keys(Wekinator.prototype)
     .filter(f => !['connect'].includes(f))
-    .map(a => wn.prototype[a])
+    .map(a => Wekinator.prototype[a])
     // .forEach(f => expect(f).toThrow());
     .forEach(f => {
       try { f() } catch(e) { console.log(e.message) }
     });
+});
+
+test('on function appears after connect', function() {
+  expect(Wekinator.prototype).not.toHaveProperty('on');
+  const wn = new Wekinator();
+  expect(Wekinator.prototype).not.toHaveProperty('on');
+  wn.connect(() => {
+    expect(typeof wn.on).toBe('function');
+  });
 });
