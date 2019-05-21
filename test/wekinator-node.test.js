@@ -231,10 +231,26 @@ test('trainOnData sends correct OSC message', function() {
   });
 });
 
+test('selectInputsForOutput sends correct OSC message', function() {
+  const wn = new Wekinator();
+
+  wn.connect(() => {
+    expect(wn.selectInputsForOutput).toThrow();
+    wn.selectInputsForOutput(0,[1,2,-3]);
+    //TODO: I believe this arg is a bug, see #4
+    expect(oscMock.UDPPort.prototype.send.mock.calls[0][0]).toEqual({
+      address: "/wekinator/control/selectInputsForOutput",
+      args: 4
+    });
+  });
+});
+
 test.skip('All methods are covered by method tests', function() {
   expect(Object.keys(Wekinator.prototype).sort()).toEqual(
     noArgFunctions.concat(listArgFunctions).concat([
       'startDtwRecording',
+      'trainOnData',
+      'selectInputsForOutput'
     ]).sort()
   );
 });
