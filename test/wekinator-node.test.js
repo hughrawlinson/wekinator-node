@@ -73,3 +73,17 @@ test('constructor doesn\'t open an OSC port', function() {
 
   expect(oscMock.UDPPort.mock.calls).toHaveLength(0);
 });
+
+test('connect method opens a UDP port with default creds', function() {
+  const wn = new Wekinator();
+
+  wn.connect(() => {
+    expect(oscMock.UDPPort.mock.calls).toHaveLength[1];
+    expect(oscMock.UDPPort.mock.calls[0][0]).toEqual({
+      localAddress: "0.0.0.0",
+      localPort: 12000,
+      remoteAddress: "127.0.0.1",
+      remotePort: 6448
+    });
+  });
+});
