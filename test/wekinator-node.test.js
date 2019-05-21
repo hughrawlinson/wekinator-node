@@ -155,3 +155,9 @@ test('API sends correct OSC messages for list param calls', () => {
     });
   });
 });
+
+test.skip('All methods are covered by method tests', function() {
+  expect(Object.keys(Wekinator.prototype)).toEqual(
+    noArgFunctions.concat(listArgFunctions)
+  );
+});
