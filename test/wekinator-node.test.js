@@ -186,6 +186,51 @@ test('startDtwRecording sends correct OSC message', function() {
   });
 });
 
+test('trainOnData sends correct OSC message', function() {
+  const wn = new Wekinator();
+
+  wn.connect(() => {
+    expect(wn.trainOnData).toThrow();
+    wn.trainOnData([])
+    expect(oscMock.UDPPort.prototype.send.mock.calls[0][0]).toEqual({
+      address: "/wekinator/control/startRecording"
+    });
+    expect(oscMock.UDPPort.prototype.send.mock.calls[1][0]).toEqual({
+      address: "/wekinator/control/startRecording"
+    });
+    expect(oscMock.UDPPort.prototype.send.mock.calls[2][0]).toEqual({
+      address: "/wekinator/control/stopRecording"
+    });
+    expect(oscMock.UDPPort.prototype.send.mock.calls[3][0]).toEqual({
+      address: "/wekinator/control/train"
+    });
+    oscMock.UDPPort.prototype.send.mockReset();
+    expect(() => wn.trainOnData(['this is a string'])).toThrow();
+    expect(() => wn.trainOnData([0.01, 0.02])).toThrow();
+    oscMock.UDPPort.prototype.send.mockReset();
+    wn.trainOnData([{inputs:[0.01, 0.02], outputs:[0.99, 0.98]}]);
+    expect(oscMock.UDPPort.prototype.send.mock.calls[0][0]).toEqual({
+      address: "/wekinator/control/startRecording"
+    });
+    expect(oscMock.UDPPort.prototype.send.mock.calls[1][0]).toEqual({
+      address: "/wekinator/control/outputs",
+      args: [0.99, 0.98]
+    });
+    expect(oscMock.UDPPort.prototype.send.mock.calls[2][0]).toEqual({
+      address: "/wek/inputs",
+      args: [0.01, 0.02]
+    });
+    expect(oscMock.UDPPort.prototype.send.mock.calls[3][0]).toEqual({
+      address: "/wekinator/control/stopRecording"
+    });
+    expect(oscMock.UDPPort.prototype.send.mock.calls[4][0]).toEqual({
+      address: "/wekinator/control/train"
+    });
+    expect(oscMock.UDPPort.prototype.send.mock.calls[5])
+      .toBe(undefined);
+  });
+});
+
 test.skip('All methods are covered by method tests', function() {
   expect(Object.keys(Wekinator.prototype).sort()).toEqual(
     noArgFunctions.concat(listArgFunctions).concat([
