@@ -30,3 +30,9 @@ test('exports the right functions', function() {
     "trainOnData"
   ]);
 });
+
+test('All functions error if called before connect', function() {
+  const functions = Object.keys(wn.prototype)
+    .map(a => wn.prototype[a])
+    .forEach(f => expect(f).toThrow());
+});
