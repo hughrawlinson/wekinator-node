@@ -245,12 +245,22 @@ test('selectInputsForOutput sends correct OSC message', function() {
   });
 });
 
+test('on correctly registers a callback for OSC events', function() {
+  const wn = new Wekinator();
+  const callback = () => {};
+  wn.connect(() => {
+    wn.on(callback);
+    expect(oscMock.UDPPort.prototype.on.mock.calls[0][0]).toBe(callback);
+  });
+});
+
 test.skip('All methods are covered by method tests', function() {
   expect(Object.keys(Wekinator.prototype).sort()).toEqual(
     noArgFunctions.concat(listArgFunctions).concat([
       'startDtwRecording',
       'trainOnData',
-      'selectInputsForOutput'
+      'selectInputsForOutput',
+      'on'
     ]).sort()
   );
 });
