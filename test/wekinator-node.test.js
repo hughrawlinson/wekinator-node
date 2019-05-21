@@ -167,8 +167,29 @@ test('API throws errors when params are incorrect', () => {
   });
 });
 
+test('startDtwRecording sends correct OSC message', function() {
+  const wn = new Wekinator();
+
+  wn.connect(() => {
+    wn.startDtwRecording(0)
+    expect(oscMock.UDPPort.prototype.send.mock.calls[0][0]).toEqual({
+      address: '/wekinator/control/startDtwRecording',
+      args: 0
+    });
+    wn.startDtwRecording(1)
+    expect(oscMock.UDPPort.prototype.send.mock.calls[1][0]).toEqual({
+      address: '/wekinator/control/startDtwRecording',
+      args: 1
+    });
+    // Calling without an arg throws
+    expect(wn.startDtwRecording).toThrow()
+  });
+});
+
 test.skip('All methods are covered by method tests', function() {
-  expect(Object.keys(Wekinator.prototype)).toEqual(
-    noArgFunctions.concat(listArgFunctions)
+  expect(Object.keys(Wekinator.prototype).sort()).toEqual(
+    noArgFunctions.concat(listArgFunctions).concat([
+      'startDtwRecording',
+    ]).sort()
   );
 });
