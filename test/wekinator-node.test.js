@@ -148,10 +148,21 @@ test('API sends correct OSC messages for list param calls', () => {
     listArgFunctions.forEach((f, i) => {
       wn[f]([]);
       expect(oscMock.UDPPort.prototype.send.mock.calls[i][0]).toEqual({
-        // address: `/wekinator/control/${f}`
         address: 'inputs' === f ? `/wek/${f}` : `/wekinator/control/${f}`,
         args: []
       });
+    });
+  });
+});
+
+test('API throws errors when params are incorrect', () => {
+  const wn = new Wekinator();
+
+  wn.connect(() => {
+    listArgFunctions.forEach((f, i) => {
+      expect(() => {
+        wn[f]();
+      }).toThrow();
     });
   });
 });
