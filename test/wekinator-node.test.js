@@ -254,3 +254,11 @@ test.skip('All methods are covered by method tests', function() {
     ]).sort()
   );
 });
+
+test('sending a message before opening a connection throws an error', function() {
+  const wn = new Wekinator();
+  // TODO: this should actually throw the error in the send function in the
+  // constructor. It doesn't, because queuePush isn't defined at this point,
+  // so that code is unreachable.
+  expect(wn.startRecording).toThrow();
+});
