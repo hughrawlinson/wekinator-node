@@ -12,8 +12,20 @@ const noArgFunctions = [
   'deleteAllExamples'
 ];
 
+const listArgFunctions = [
+  'inputs',
+  'outputs',
+  'enableModelRecording',
+  'disableModelRecording',
+  'enableModelRunning',
+  'disableModelRunning',
+  'setInputNames',
+  'setOutputNames',
+]
+
 afterEach(() => {
   oscMock.UDPPort.mockReset();
+  oscMock.UDPPort.prototype.send.mockReset();
 });
 
 test('exports something', function() {
@@ -116,21 +128,29 @@ test('constructor allows setting other weka server config', function() {
   });
 });
 
-test('API sends correct OSC messages', () => {
+test('API sends correct OSC messages for nonparam calls', () => {
   const wn = new Wekinator();
-  const functionToOscMessage = {
-    startRecording: "startRecording",
-    stopRecording: "stopRecording",
-    stopDtwRecording: "stopDtwRecording",
-    train: 'train',
-
-  };
 
   wn.connect(() => {
     noArgFunctions.forEach((f, i) => {
       wn[f]();
       expect(oscMock.UDPPort.prototype.send.mock.calls[i][0]).toEqual({
         address: `/wekinator/control/${f}`
+      });
+    });
+  });
+});
+
+test('API sends correct OSC messages for list param calls', () => {
+  const wn = new Wekinator();
+
+  wn.connect(() => {
+    listArgFunctions.forEach((f, i) => {
+      wn[f]([]);
+      expect(oscMock.UDPPort.prototype.send.mock.calls[i][0]).toEqual({
+        // address: `/wekinator/control/${f}`
+        address: 'inputs' === f ? `/wek/${f}` : `/wekinator/control/${f}`,
+        args: []
       });
     });
   });
