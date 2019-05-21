@@ -87,3 +87,20 @@ test('connect method opens a UDP port with default creds', function() {
     });
   });
 });
+
+test('constructor allows setting other weka server config', function() {
+  const wekinatorHost = '192.168.0.50';
+  const wekinatorPort = 8081;
+  const localPort = 8080;
+  const wn = new Wekinator(wekinatorHost, wekinatorPort, localPort);
+
+  wn.connect(() => {
+    expect(oscMock.UDPPort.mock.calls).toHaveLength[1];
+    expect(oscMock.UDPPort.mock.calls[0][0]).toEqual({
+      localAddress: "0.0.0.0",
+      localPort: localPort,
+      remoteAddress: wekinatorHost,
+      remotePort: wekinatorPort
+    });
+  });
+});
