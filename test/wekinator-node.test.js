@@ -54,4 +54,11 @@ test('on function appears after connect', function() {
   wn.connect(() => {
     expect(typeof wn.on).toBe('function');
   });
+  wn.disconnect();
+});
+
+test('connect function requires a callback', function() {
+  const wn = new Wekinator();
+  expect(wn.connect).toThrowError("callback is not a function");
+  wn.disconnect()
 });
