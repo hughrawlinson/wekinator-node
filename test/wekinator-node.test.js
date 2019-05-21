@@ -1,4 +1,9 @@
 const Wekinator = require('../index.js');
+const oscMock = require('osc');
+
+afterEach(() => {
+  oscMock.UDPPort.mockReset();
+});
 
 test('exports something', function() {
   expect(Wekinator).not.toBeNull();
@@ -61,4 +66,10 @@ test('connect function requires a callback', function() {
   const wn = new Wekinator();
   expect(wn.connect).toThrowError("callback is not a function");
   wn.disconnect()
+});
+
+test('constructor doesn\'t open an OSC port', function() {
+  const wn = new Wekinator();
+
+  expect(oscMock.UDPPort.mock.calls).toHaveLength(0);
 });

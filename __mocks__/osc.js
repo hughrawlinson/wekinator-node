@@ -1,6 +1,6 @@
-function UDPPort () {}
+const UDPPort = jest.fn();
 
-UDPPort.prototype.open = function(){}
+UDPPort.prototype.open = jest.fn()
 
 module.exports = {
   UDPPort
