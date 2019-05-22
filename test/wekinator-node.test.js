@@ -286,13 +286,19 @@ test('disconnect and close call close on port after timeout without callback',
   });
 });
 
+test('close is an alias for disconnect', function() {
+  expect(Wekinator.prototype.close).toBe(Wekinator.prototype.disconnect);
+});
+
 test.skip('All methods are covered by method tests', function() {
   expect(Object.keys(Wekinator.prototype).sort()).toEqual(
     noArgFunctions.concat(listArgFunctions).concat([
       'startDtwRecording',
       'trainOnData',
       'selectInputsForOutput',
-      'on'
+      'on',
+      'disconnect',
+      'close'
     ]).sort()
   );
 });
