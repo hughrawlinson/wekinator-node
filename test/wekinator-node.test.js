@@ -290,7 +290,7 @@ test('close is an alias for disconnect', function() {
   expect(Wekinator.prototype.close).toBe(Wekinator.prototype.disconnect);
 });
 
-test.skip('All methods are covered by method tests', function() {
+test('All methods are covered by method tests', function() {
   expect(Object.keys(Wekinator.prototype).sort()).toEqual(
     noArgFunctions.concat(listArgFunctions).concat([
       'startDtwRecording',
@@ -298,9 +298,35 @@ test.skip('All methods are covered by method tests', function() {
       'selectInputsForOutput',
       'on',
       'disconnect',
-      'close'
+      'close',
+      'connect'
     ]).sort()
   );
+});
+
+test('connect correctly opens an OSC port', function() {
+  oscMock.UDPPort.prototype.open.mockReset();
+
+  const wn = new Wekinator();
+
+  // TODO: on is already defined at this point because the constructor
+  // modifies the base function, rather than the prototype of the instance.
+  // This is arguably a bad pattern in the first place, and should probably
+  // be changed.
+  // expect(Wekinator.prototype.on).toBeUndefined();
+
+  wn.connect(() => {
+    expect(oscMock.UDPPort.mock.calls[0][0]).toStrictEqual({
+      localAddress: "0.0.0.0",
+      localPort: 12000,
+      remoteAddress: "127.0.0.1",
+      remotePort: 6448
+    });
+    expect(oscMock.UDPPort.prototype.open).toHaveBeenCalledTimes(1);
+
+    expect(Wekinator.prototype.on).toBeDefined();
+    expect(typeof Wekinator.prototype.on).toBe('function');
+  });
 });
 
 test('sending a message before opening a connection throws an error', function() {
