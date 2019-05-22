@@ -26,6 +26,7 @@ const listArgFunctions = [
 afterEach(() => {
   oscMock.UDPPort.mockReset();
   oscMock.UDPPort.prototype.send.mockReset();
+  oscMock.UDPPort.prototype.close.mockReset();
 });
 
 test('exports something', function() {
@@ -251,6 +252,37 @@ test('on correctly registers a callback for OSC events', function() {
   wn.connect(() => {
     wn.on(callback);
     expect(oscMock.UDPPort.prototype.on.mock.calls[0][0]).toBe(callback);
+  });
+});
+
+test('disconnect and close call close on port after timeout', function(done) {
+  jest.useFakeTimers();
+
+  const wn = new Wekinator();
+  wn.connect(() => {
+    wn.disconnect(() => {
+      expect(setTimeout).toHaveBeenCalledTimes(1);
+      expect(setTimeout.mock.calls[0][1]).toEqual(10);
+      expect(oscMock.UDPPort.prototype.close).toHaveBeenCalledTimes(1);
+      done();
+    });
+    jest.runOnlyPendingTimers();
+  });
+});
+
+test('disconnect and close call close on port after timeout without callback',
+  function() {
+  jest.useFakeTimers();
+
+  const wn = new Wekinator();
+  wn.connect(() => {
+    wn.disconnect();
+
+    jest.runOnlyPendingTimers();
+
+    expect(setTimeout).toHaveBeenCalledTimes(1);
+    expect(setTimeout.mock.calls[0][1]).toEqual(10);
+    expect(oscMock.UDPPort.prototype.close).toHaveBeenCalledTimes(1);
   });
 });
 
