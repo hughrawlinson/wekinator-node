@@ -1,6 +1,6 @@
 {
   "name": "wekinator",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "An SDK to interface with Wekinator over OSC",
   "main": "index.js",
   "scripts": {
