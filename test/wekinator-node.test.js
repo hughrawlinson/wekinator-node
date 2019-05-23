@@ -237,11 +237,10 @@ test('selectInputsForOutput sends correct OSC message', function() {
 
   wn.connect(() => {
     expect(wn.selectInputsForOutput).toThrow();
-    wn.selectInputsForOutput(0,[1,2,-3]);
-    //TODO: I believe this arg is a bug, see #4
+    wn.selectInputsForOutput(0,[1,2,3]);
     expect(oscMock.UDPPort.prototype.send.mock.calls[0][0]).toEqual({
       address: "/wekinator/control/selectInputsForOutput",
-      args: 4
+      args: [0,1,2,3]
     });
   });
 });
