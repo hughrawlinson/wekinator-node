@@ -34,10 +34,11 @@ test('exports something', function() {
 });
 
 test('exports the right functions', function() {
-  expect(Object.keys(Wekinator.prototype).sort()).toEqual([
+  expect(Object.getOwnPropertyNames(Wekinator.prototype).sort()).toEqual([
     "cancelTrain",
     "close",
     "connect",
+    "constructor",
     "deleteAllExamples",
     "disableModelRecording",
     "disableModelRunning",
@@ -290,7 +291,7 @@ test('close is an alias for disconnect', function() {
 });
 
 test('All methods are covered by method tests', function() {
-  expect(Object.keys(Wekinator.prototype).sort()).toEqual(
+  expect(Object.getOwnPropertyNames(Wekinator.prototype).sort()).toEqual(
     noArgFunctions.concat(listArgFunctions).concat([
       'startDtwRecording',
       'trainOnData',
@@ -298,7 +299,8 @@ test('All methods are covered by method tests', function() {
       'on',
       'disconnect',
       'close',
-      'connect'
+      'connect',
+      'constructor'
     ]).sort()
   );
 });
@@ -307,12 +309,6 @@ test('connect correctly opens an OSC port', function() {
   oscMock.UDPPort.prototype.open.mockReset();
 
   const wn = new Wekinator();
-
-  // TODO: on is already defined at this point because the constructor
-  // modifies the base function, rather than the prototype of the instance.
-  // This is arguably a bad pattern in the first place, and should probably
-  // be changed.
-  // expect(Wekinator.prototype.on).toBeUndefined();
 
   wn.connect(() => {
     expect(oscMock.UDPPort.mock.calls[0][0]).toStrictEqual({
