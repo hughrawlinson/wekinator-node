@@ -45,6 +45,7 @@ test('exports the right functions', function() {
     "enableModelRecording",
     "enableModelRunning",
     "inputs",
+    "on",
     "outputs",
     "selectInputsForOutput",
     "setInputNames",
@@ -77,10 +78,9 @@ test.skip('Constructor', function() {
 });
 
 test('on function appears after connect', function() {
-  expect(Wekinator.prototype).not.toHaveProperty('on');
   const wn = new Wekinator();
-  expect(Wekinator.prototype).not.toHaveProperty('on');
   wn.connect(() => {
+    expect(Wekinator.prototype).toHaveProperty('on');
     expect(typeof wn.on).toBe('function');
   });
   wn.disconnect();
