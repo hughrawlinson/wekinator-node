@@ -89,7 +89,7 @@ test('on function appears after connect', function() {
 
 test('connect function requires a callback', function() {
   const wn = new Wekinator();
-  expect(wn.connect).toThrowError("callback is not a function");
+  expect(() => wn.connect()).toThrowError("callback is not a function");
   wn.disconnect()
 });
 
@@ -198,12 +198,9 @@ test('trainOnData sends correct OSC message', function() {
       address: "/wekinator/control/startRecording"
     });
     expect(oscMock.UDPPort.prototype.send.mock.calls[1][0]).toEqual({
-      address: "/wekinator/control/startRecording"
-    });
-    expect(oscMock.UDPPort.prototype.send.mock.calls[2][0]).toEqual({
       address: "/wekinator/control/stopRecording"
     });
-    expect(oscMock.UDPPort.prototype.send.mock.calls[3][0]).toEqual({
+    expect(oscMock.UDPPort.prototype.send.mock.calls[2][0]).toEqual({
       address: "/wekinator/control/train"
     });
     oscMock.UDPPort.prototype.send.mockReset();
@@ -326,8 +323,6 @@ test('connect correctly opens an OSC port', function() {
 
 test('sending a message before opening a connection throws an error', function() {
   const wn = new Wekinator();
-  // TODO: this should actually throw the error in the send function in the
-  // constructor. It doesn't, because queuePush isn't defined at this point,
-  // so that code is unreachable.
-  expect(wn.startRecording).toThrow();
+
+  expect(() => wn.startRecording()).toThrow();
 });
