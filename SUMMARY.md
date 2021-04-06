@@ -1,5 +1,5 @@
 # Table of contents
 
-* [wekinator-node](README.md)
+* [README](README.md)
 * [LICENSE](license.md)
 
