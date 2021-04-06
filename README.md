@@ -1,4 +1,4 @@
-# README
+# wekinator-node
 
 [![Build Status](https://travis-ci.org/hughrawlinson/wekinator-node.svg?branch=master)](https://travis-ci.org/hughrawlinson/wekinator-node) [![npm version](https://badge.fury.io/js/wekinator.svg)](https://badge.fury.io/js/wekinator)
 
