@@ -1,8 +1,5 @@
-name: merge-build
-on:
-  push:
-    branches:
-      - main
+name: build
+on: [push]
 
 jobs:
   build:
