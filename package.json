@@ -1,10 +1,11 @@
 {
   "name": "wekinator",
-  "version": "0.2.2",
+  "version": "0.0.0-development",
   "description": "An SDK to interface with Wekinator over OSC",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "semantic-release": "semantic-release"
   },
   "author": "Hugh Rawlinson <hugh@codeoclock.net>",
   "license": "MIT",
@@ -22,7 +23,8 @@
   "devDependencies": {
     "cz-conventional-changelog": "^3.0.0",
     "commitizen": "^4.0.0",
-    "jest": "^27.0.6"
+    "jest": "^27.0.6",
+    "semantic-release": "^18.0.0"
   },
   "config": {
     "commitizen": {
