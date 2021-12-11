@@ -25,6 +25,9 @@ Another example is available [here](https://github.com/hughrawlinson/wekinator-n
 
 wekinator-node supports the Wekinator control messages [documented here](http://www.wekinator.org/detailed-instructions/#Controlling_Wekinator_via_OSC_messages) with the following Javascript method names.
 
+<details>
+  <summary>List of methods</summary>
+
 - `WekinatorNode` \(constructor\) takes `wekinatorHost, wekinatorPort, localPort [optional]`
 - `connect` takes a `callback`
   - Connects to Wekinator, calls the callback once it's done.
@@ -67,3 +70,5 @@ wekinator-node supports the Wekinator control messages [documented here](http://
 - `selectInputsForOutput` takes `output, inputs`
   - Connects a list of inputs to a specific output.
 - `trainOnData` takes a list of objects with the properties 'inputs' and 'outputs', each of which are arrays of floats like in `inputs` and `outputs`.
+  
+</details>
