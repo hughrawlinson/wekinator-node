@@ -1,27 +1,41 @@
-const Wekinator = require('../index.js');
-const oscMock = require('osc');
+import { jest } from "@jest/globals";
+const UDPPort = jest.fn();
+
+UDPPort.prototype.open = jest.fn();
+UDPPort.prototype.send = jest.fn();
+UDPPort.prototype.on = jest.fn();
+UDPPort.prototype.close = jest.fn();
+
+jest.unstable_mockModule("osc", () => ({
+  default: {
+    UDPPort,
+  },
+}));
+
+import oscMock from "osc";
+import { Wekinator } from "../index.js";
 
 const noArgFunctions = [
-  'startRecording',
-  'stopRecording',
-  'stopDtwRecording',
-  'train',
-  'cancelTrain',
-  'startRunning',
-  'stopRunning',
-  'deleteAllExamples'
+  "startRecording",
+  "stopRecording",
+  "stopDtwRecording",
+  "train",
+  "cancelTrain",
+  "startRunning",
+  "stopRunning",
+  "deleteAllExamples",
 ];
 
 const listArgFunctions = [
-  'inputs',
-  'outputs',
-  'enableModelRecording',
-  'disableModelRecording',
-  'enableModelRunning',
-  'disableModelRunning',
-  'setInputNames',
-  'setOutputNames',
-]
+  "inputs",
+  "outputs",
+  "enableModelRecording",
+  "disableModelRecording",
+  "enableModelRunning",
+  "disableModelRunning",
+  "setInputNames",
+  "setOutputNames",
+];
 
 afterEach(() => {
   oscMock.UDPPort.mockReset();
@@ -29,11 +43,11 @@ afterEach(() => {
   oscMock.UDPPort.prototype.close.mockReset();
 });
 
-test('exports something', function() {
+test("exports something", function () {
   expect(Wekinator).not.toBeNull();
 });
 
-test('exports the right functions', function() {
+test("exports the right functions", function () {
   expect(Object.getOwnPropertyNames(Wekinator.prototype).sort()).toEqual([
     "cancelTrain",
     "close",
@@ -58,48 +72,52 @@ test('exports the right functions', function() {
     "stopRecording",
     "stopRunning",
     "train",
-    "trainOnData"
+    "trainOnData",
   ]);
 });
 
-test('All functions error if called before connect', function() {
+test("All functions error if called before connect", function () {
   const functions = Object.keys(Wekinator.prototype)
-    .map(a => Wekinator.prototype[a])
-    .forEach(f => expect(f).toThrow());
+    .map((a) => Wekinator.prototype[a])
+    .forEach((f) => expect(f).toThrow());
 });
 
-test.skip('Constructor', function() {
+test.skip("Constructor", function () {
   const functions = Object.keys(Wekinator.prototype)
-    .filter(f => !['connect'].includes(f))
-    .map(a => Wekinator.prototype[a])
+    .filter((f) => !["connect"].includes(f))
+    .map((a) => Wekinator.prototype[a])
     // .forEach(f => expect(f).toThrow());
-    .forEach(f => {
-      try { f() } catch(e) { console.log(e.message) }
+    .forEach((f) => {
+      try {
+        f();
+      } catch (e) {
+        console.log(e.message);
+      }
     });
 });
 
-test('on function appears after connect', function() {
+test("on function appears after connect", function () {
   const wn = new Wekinator();
   wn.connect(() => {
-    expect(Wekinator.prototype).toHaveProperty('on');
-    expect(typeof wn.on).toBe('function');
+    expect(Wekinator.prototype).toHaveProperty("on");
+    expect(typeof wn.on).toBe("function");
   });
   wn.disconnect();
 });
 
-test('connect function requires a callback', function() {
+test("connect function requires a callback", function () {
   const wn = new Wekinator();
   expect(() => wn.connect()).toThrowError("callback is not a function");
-  wn.disconnect()
+  wn.disconnect();
 });
 
-test('constructor doesn\'t open an OSC port', function() {
+test("constructor doesn't open an OSC port", function () {
   const wn = new Wekinator();
 
   expect(oscMock.UDPPort.mock.calls).toHaveLength(0);
 });
 
-test('connect method opens a UDP port with default creds', function() {
+test("connect method opens a UDP port with default creds", function () {
   const wn = new Wekinator();
 
   wn.connect(() => {
@@ -108,13 +126,13 @@ test('connect method opens a UDP port with default creds', function() {
       localAddress: "0.0.0.0",
       localPort: 12000,
       remoteAddress: "127.0.0.1",
-      remotePort: 6448
+      remotePort: 6448,
     });
   });
 });
 
-test('constructor allows setting other weka server config', function() {
-  const wekinatorHost = '192.168.0.50';
+test("constructor allows setting other weka server config", function () {
+  const wekinatorHost = "192.168.0.50";
   const wekinatorPort = 8081;
   const localPort = 8080;
   const wn = new Wekinator(wekinatorHost, wekinatorPort, localPort);
@@ -125,39 +143,39 @@ test('constructor allows setting other weka server config', function() {
       localAddress: "0.0.0.0",
       localPort: localPort,
       remoteAddress: wekinatorHost,
-      remotePort: wekinatorPort
+      remotePort: wekinatorPort,
     });
   });
 });
 
-test('API sends correct OSC messages for nonparam calls', () => {
+test("API sends correct OSC messages for nonparam calls", () => {
   const wn = new Wekinator();
 
   wn.connect(() => {
     noArgFunctions.forEach((f, i) => {
       wn[f]();
       expect(oscMock.UDPPort.prototype.send.mock.calls[i][0]).toEqual({
-        address: `/wekinator/control/${f}`
+        address: `/wekinator/control/${f}`,
       });
     });
   });
 });
 
-test('API sends correct OSC messages for list param calls', () => {
+test("API sends correct OSC messages for list param calls", () => {
   const wn = new Wekinator();
 
   wn.connect(() => {
     listArgFunctions.forEach((f, i) => {
       wn[f]([]);
       expect(oscMock.UDPPort.prototype.send.mock.calls[i][0]).toEqual({
-        address: 'inputs' === f ? `/wek/${f}` : `/wekinator/control/${f}`,
-        args: []
+        address: "inputs" === f ? `/wek/${f}` : `/wekinator/control/${f}`,
+        args: [],
       });
     });
   });
 });
 
-test('API throws errors when params are incorrect', () => {
+test("API throws errors when params are incorrect", () => {
   const wn = new Wekinator();
 
   wn.connect(() => {
@@ -169,81 +187,80 @@ test('API throws errors when params are incorrect', () => {
   });
 });
 
-test('startDtwRecording sends correct OSC message', function() {
+test("startDtwRecording sends correct OSC message", function () {
   const wn = new Wekinator();
 
   wn.connect(() => {
-    wn.startDtwRecording(0)
+    wn.startDtwRecording(0);
     expect(oscMock.UDPPort.prototype.send.mock.calls[0][0]).toEqual({
-      address: '/wekinator/control/startDtwRecording',
-      args: 0
+      address: "/wekinator/control/startDtwRecording",
+      args: 0,
     });
-    wn.startDtwRecording(1)
+    wn.startDtwRecording(1);
     expect(oscMock.UDPPort.prototype.send.mock.calls[1][0]).toEqual({
-      address: '/wekinator/control/startDtwRecording',
-      args: 1
+      address: "/wekinator/control/startDtwRecording",
+      args: 1,
     });
     // Calling without an arg throws
-    expect(wn.startDtwRecording).toThrow()
+    expect(wn.startDtwRecording).toThrow();
   });
 });
 
-test('trainOnData sends correct OSC message', function() {
+test("trainOnData sends correct OSC message", function () {
   const wn = new Wekinator();
 
   wn.connect(() => {
     expect(wn.trainOnData).toThrow();
-    wn.trainOnData([])
+    wn.trainOnData([]);
     expect(oscMock.UDPPort.prototype.send.mock.calls[0][0]).toEqual({
-      address: "/wekinator/control/startRecording"
+      address: "/wekinator/control/startRecording",
     });
     expect(oscMock.UDPPort.prototype.send.mock.calls[1][0]).toEqual({
-      address: "/wekinator/control/stopRecording"
+      address: "/wekinator/control/stopRecording",
     });
     expect(oscMock.UDPPort.prototype.send.mock.calls[2][0]).toEqual({
-      address: "/wekinator/control/train"
+      address: "/wekinator/control/train",
     });
     oscMock.UDPPort.prototype.send.mockReset();
-    expect(() => wn.trainOnData(['this is a string'])).toThrow();
+    expect(() => wn.trainOnData(["this is a string"])).toThrow();
     expect(() => wn.trainOnData([0.01, 0.02])).toThrow();
     oscMock.UDPPort.prototype.send.mockReset();
-    wn.trainOnData([{inputs:[0.01, 0.02], outputs:[0.99, 0.98]}]);
+    wn.trainOnData([{ inputs: [0.01, 0.02], outputs: [0.99, 0.98] }]);
     expect(oscMock.UDPPort.prototype.send.mock.calls[0][0]).toEqual({
-      address: "/wekinator/control/startRecording"
+      address: "/wekinator/control/startRecording",
     });
     expect(oscMock.UDPPort.prototype.send.mock.calls[1][0]).toEqual({
       address: "/wekinator/control/outputs",
-      args: [0.99, 0.98]
+      args: [0.99, 0.98],
     });
     expect(oscMock.UDPPort.prototype.send.mock.calls[2][0]).toEqual({
       address: "/wek/inputs",
-      args: [0.01, 0.02]
+      args: [0.01, 0.02],
     });
     expect(oscMock.UDPPort.prototype.send.mock.calls[3][0]).toEqual({
-      address: "/wekinator/control/stopRecording"
+      address: "/wekinator/control/stopRecording",
     });
     expect(oscMock.UDPPort.prototype.send.mock.calls[4][0]).toEqual({
-      address: "/wekinator/control/train"
+      address: "/wekinator/control/train",
     });
-    expect(oscMock.UDPPort.prototype.send.mock.calls[5])
-      .toBe(undefined);
+    expect(oscMock.UDPPort.prototype.send.mock.calls[5]).toBe(undefined);
   });
 });
 
-test('selectInputsForOutput sends correct OSC message', function() {
+test("selectInputsForOutput sends correct OSC message", function () {
   const wn = new Wekinator();
 
   wn.connect(() => {
     expect(wn.selectInputsForOutput).toThrow();
-    wn.selectInputsForOutput(0,[1,2,3]);
+    wn.selectInputsForOutput(0, [1, 2, 3]);
     expect(oscMock.UDPPort.prototype.send.mock.calls[0][0]).toEqual({
       address: "/wekinator/control/selectInputsForOutput",
-      args: [0,1,2,3]
+      args: [0, 1, 2, 3],
     });
   });
 });
 
-test('on correctly registers a callback for OSC events', function() {
+test("on correctly registers a callback for OSC events", function () {
   const wn = new Wekinator();
   const callback = () => {};
   wn.connect(() => {
@@ -288,26 +305,29 @@ test.skip("disconnect and close call close on port after timeout without callbac
   });
 });
 
-test('close is an alias for disconnect', function() {
+test("close is an alias for disconnect", function () {
   expect(Wekinator.prototype.close).toBe(Wekinator.prototype.disconnect);
 });
 
-test('All methods are covered by method tests', function() {
+test("All methods are covered by method tests", function () {
   expect(Object.getOwnPropertyNames(Wekinator.prototype).sort()).toEqual(
-    noArgFunctions.concat(listArgFunctions).concat([
-      'startDtwRecording',
-      'trainOnData',
-      'selectInputsForOutput',
-      'on',
-      'disconnect',
-      'close',
-      'connect',
-      'constructor'
-    ]).sort()
+    noArgFunctions
+      .concat(listArgFunctions)
+      .concat([
+        "startDtwRecording",
+        "trainOnData",
+        "selectInputsForOutput",
+        "on",
+        "disconnect",
+        "close",
+        "connect",
+        "constructor",
+      ])
+      .sort()
   );
 });
 
-test('connect correctly opens an OSC port', function() {
+test("connect correctly opens an OSC port", function () {
   oscMock.UDPPort.prototype.open.mockReset();
 
   const wn = new Wekinator();
@@ -317,16 +337,16 @@ test('connect correctly opens an OSC port', function() {
       localAddress: "0.0.0.0",
       localPort: 12000,
       remoteAddress: "127.0.0.1",
-      remotePort: 6448
+      remotePort: 6448,
     });
     expect(oscMock.UDPPort.prototype.open).toHaveBeenCalledTimes(1);
 
     expect(Wekinator.prototype.on).toBeDefined();
-    expect(typeof Wekinator.prototype.on).toBe('function');
+    expect(typeof Wekinator.prototype.on).toBe("function");
   });
 });
 
-test('sending a message before opening a connection throws an error', function() {
+test("sending a message before opening a connection throws an error", function () {
   const wn = new Wekinator();
 
   expect(() => wn.startRecording()).toThrow();

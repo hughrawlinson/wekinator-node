@@ -3,8 +3,9 @@
   "version": "0.0.0-development",
   "description": "An SDK to interface with Wekinator over OSC",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "jest",
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
     "semantic-release": "semantic-release"
   },
   "author": "Hugh Rawlinson <hugh@codeoclock.net>",
@@ -21,9 +22,9 @@
     "osc": "^2.3.0"
   },
   "devDependencies": {
-    "cz-conventional-changelog": "^3.0.0",
     "commitizen": "^4.0.0",
-    "jest": "^27.0.6",
+    "cz-conventional-changelog": "^3.0.0",
+    "jest": "^27.3.1",
     "semantic-release": "^18.0.0"
   },
   "config": {
@@ -35,5 +36,8 @@
     "branches": [
       "main"
     ]
+  },
+  "jest": {
+    "transform": {}
   }
 }

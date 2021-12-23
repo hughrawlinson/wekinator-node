@@ -1,1 +1,1 @@
-module.exports = require('./lib/wekinator-node');
+export { Wekinator } from "./lib/wekinator-node";
